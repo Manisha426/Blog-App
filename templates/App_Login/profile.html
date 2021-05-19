@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}
+  Profile Page
+{% endblock %}
+
+{% block body %}
+  <h3>Your Profile</h3>
+
+{% if user.User_profile %}
+<img src="/media/{{user.User_profile.profile_pic}}" class="rounded-circle" width="140px">
+<br>
+<br>
+<a href="{% url 'App_Login:change_pro_pic' %}" class="btn btn-info btn-sm">Change Profile Picture</a>
+{% else %}
+<img src="/media/Elon.jpg" class="rounded-circle" width='120px'>
+<br><br>
+<a href="{% url 'App_Login:add_pro_pic' %}" class="btn btn-info btn-sm">Change Profile Picture</a>
+{% endif %}
+
+
+  <p>Username:{{ user.username }}</p>
+  <p>Email:{{ user.email }}</p>
+  <p>Name:{{ user.first_name }} {{ user.last_name }}</p>
+
+<a href="{% url 'App_Login:user_change' %}" class="btn btn-info btn-sm">Change Profile Info</a>
+{% endblock %}
