@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.template.defaultfilters import slugify
 
 # Create your models here.
 
@@ -11,6 +12,10 @@ class Blog(models.Model):
     blog_image = models.ImageField(upload_to='blog_images', verbose_name='blog_image')
     publish_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+            self.slug = slugify(self.blog_title)
+            super(Blog, self).save(*args, **kwargs)
 
     class Meta:
         ordering = ['-publish_date']

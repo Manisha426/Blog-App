@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 import uuid
 from App_Blog.forms import CommentForm
+from django.http import HttpResponse
 # Create your views here.
 
 
@@ -26,26 +27,34 @@ class CreateBlog(LoginRequiredMixin, CreateView):
         title = blog_obj.blog_title
         blog_obj.slug = title.replace(" ","-") + "-" + str(uuid.uuid4())
         blog_obj.save()
-        return HttpResponseRedirect(reverse('index'))
+        # import pdb;pdb.set_trace()
+        return HttpResponseRedirect(reverse('App_Blog:BlogList'))
 
 def blog_details(request, slug):
-    blog=Blog.objects.get(slug=slug)
-    comment_form = CommentForm()
-    already_liked = Likes.objects.filter(blog=blog, user=request.user)
-    if already_liked:
-        liked=True
-    else:
-        liked=False
+    # import pdb;pdb.set_trace()
+    try:
+        blog=Blog.objects.get(slug=slug)
+        
+        comment_form = CommentForm()
+        already_liked = Likes.objects.filter(blog=blog, user=request.user)
+        if already_liked:
+            liked=True
+        else:
+            liked=False
 
-    if request.method == 'POST':
-        comment_form = CommentForm(request.POST)
-        if comment_form.is_valid():
-            comment = comment_form.save(commit=False)
-            comment.user = request.user
-            comment.blog = blog
-            comment.save()
-            return HttpResponseRedirect(reverse('App_Blog:blog_details', kwargs={'slug':slug}))
-    return render(request, 'App_Blog/blog_details.html', context={'blog':blog, 'comment_form':comment_form, 'liked':liked})
+        if request.method == 'POST':
+            comment_form = CommentForm(request.POST)
+            if comment_form.is_valid():
+                comment = comment_form.save(commit=False)
+                comment.user = request.user
+                comment.blog = blog
+                comment.save()
+                return HttpResponseRedirect(reverse('App_Blog:blog_details', kwargs={'slug':slug}))
+        context={'blog':blog, 'comment_form':comment_form, 'liked':liked}
+        # import pdb;pdb.set_trace()
+        return render(request, 'App_Blog/blog_details.html',context )
+    except:
+        return HttpResponseRedirect(reverse('App_Blog:BlogList'))
 
 @login_required
 def liked(request, pk):

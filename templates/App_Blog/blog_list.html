@@ -17,7 +17,7 @@
 
 <div class="col-sm-8">
   <p>{{ blog.blog_content|range_filter|linebreaks }}
-  <a href="#">Read More</a></p>             <!--{% url 'App_Blog:blog_details' slug=blog.slug %}-->
+  <a href="{% url 'App_Blog:blog_details' slug=blog.slug %}">Read More</a></p>             
   <p>{{ blog.blog_content|range_filter|linebreaks }}</p>
   <h6>Posted by: <a href="#">{{ blog.author }}</a></h6>
 </div>
